@@ -7,10 +7,10 @@ import LaughingSpinner from '@/components/LaughingSpinner.vue';
 import ImageBox from '@/components/ImageBox.vue';
 
 const props = defineProps({
-    jokeId: {
-        type: String,
-        required: true
-    }
+  jokeId: {
+    type: String,
+    required: true
+  }
 });
 
 const jokes = useJokesStore();
@@ -23,37 +23,47 @@ const isGeneratingJokeImage = ref(false);
 const jokeImageOption = computed(() => jokes.jokeImagesById[props.jokeId]);
 const jokeImage = computed(() => jokeImageOption.value?.some)
 
-async function getJokeImage() {
-    if (isGeneratingJokeImage.value) {
-        return;
-    }
-    isGeneratingJokeImage.value = true;
-    await jokes.getGeneratedJokeImage(props.jokeId);
-    isGeneratingJokeImage.value = false;
+async function getJokeImage(refresh: boolean = false) {
+  if (isGeneratingJokeImage.value && !refresh) {
+    return;
+  }
+  isGeneratingJokeImage.value = true;
+  await jokes.getGeneratedJokeImage(props.jokeId, refresh);
+  isGeneratingJokeImage.value = false;
+}
+
+async function handleImageError() {
+  getJokeImage(true);
 }
 
 watch(joke, () => {
-    getJokeImage();
+  getJokeImage();
 });
 
 onMounted(async () => {
-    if (jokeOption.value === undefined) {
-        isLoading.value = true;
-        await jokes.getJokeById(props.jokeId);
-        isLoading.value = false;
-    }
-    await getJokeImage();
+  if (jokeOption.value === undefined) {
+    isLoading.value = true;
+    await jokes.getJokeById(props.jokeId);
+    isLoading.value = false;
+  }
+  await getJokeImage();
 });
 </script>
 
 <template>
-    <LaughingSpinner v-if="isLoading || jokeOption === undefined" />
-    <NotFoundBox v-else-if="isNoJoke" />
-    <article v-else-if="joke" class="p-3 text-white bg-black border border-white rounded-md bg-opacity-90">
-        <ImageBox :url="jokeImage" :alt="joke?.joke" :is-loading="isGeneratingJokeImage" />
-        <p class="mb-3">{{ joke?.joke }}</p>
-        <div class="flex justify-end gap-2">
-            <ClipboardButton :text="joke?.joke" />
-        </div>
-    </article>
+  <LaughingSpinner v-if="isLoading || jokeOption === undefined" />
+  <NotFoundBox v-else-if="isNoJoke" />
+  <article v-else-if="joke" class="p-3 text-white bg-black border border-white rounded-md bg-opacity-90">
+    <div class="flex items-center justify-center w-full aspect-square">
+      <ImageBox @error="handleImageError" :alt="joke.joke" :url="jokeImage" v-if="jokeImage && !isGeneratingJokeImage" />
+      <LaughingSpinner v-else-if="isLoading" />
+      <p v-else>
+        🤖 The image robot doesn't understand this joke... yet.🤖
+      </p>
+    </div>
+    <p class="mb-3">{{ joke?.joke }}</p>
+    <div class="flex justify-end gap-2">
+      <ClipboardButton :text="joke?.joke" />
+    </div>
+  </article>
 </template>
