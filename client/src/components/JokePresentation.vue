@@ -61,7 +61,7 @@ onMounted(async () => {
         🤖 The image robot doesn't understand this joke... yet.🤖
       </p>
     </div>
-    <p class="mb-3">{{ joke?.joke }}</p>
+    <p class="mb-3 text-xl">{{ joke?.joke }}</p>
     <div class="flex justify-end gap-2">
       <ClipboardButton :text="joke?.joke" />
     </div>
