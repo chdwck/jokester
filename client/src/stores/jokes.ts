@@ -20,7 +20,7 @@ type JokesStore = {
   getMoreSearchResults: () => Promise<void>;
   getRandomJoke: () => Promise<string | undefined>;
   getJokeById: (id: string) => Promise<void>;
-  getGeneratedJokeImage: (id: string) => Promise<void>;
+  getGeneratedJokeImage: (id: string, refresh?: boolean) => Promise<void>;
 
   searchList: ComputedRef<JokeResponse[]>;
 };
@@ -95,20 +95,20 @@ export const useJokesStore = defineStore("jokes", () => {
     jokesById.value[joke.id] = Option.some(joke);
   }
 
-  async function getGeneratedJokeImage(id: string): Promise<void> {
+  async function getGeneratedJokeImage(id: string, refresh: boolean = false): Promise<void> {
     const joke = jokesById.value[id];
     if (!joke || joke.isNone) {
       return;
     }
 
-    if (jokeImagesById.value[id]) {
+    if (jokeImagesById.value[id] && !refresh) {
       return;
     }
 
     const localStorageKey = `joke-image-${id}`;
     const cachedImageUrl = localStorage.getItem(localStorageKey);
 
-    if (cachedImageUrl) {
+    if (cachedImageUrl && !refresh) {
       jokeImagesById.value[id] = Option.some(cachedImageUrl);
       return;
     }
@@ -127,10 +127,10 @@ export const useJokesStore = defineStore("jokes", () => {
   const searchList = computed(() =>
     jokeSearchList.value
       .filter((jokeId) => !jokesById.value[jokeId].isNone)
-      .map((jokeId) => jokesById.value[jokeId].some)
+      .map((jokeId) => jokesById.value[jokeId].some!)
   );
 
-  return {
+  const jokes: JokesStore = {
     jokeImagesById,
     jokesById,
     jokeSearchList,
@@ -145,5 +145,6 @@ export const useJokesStore = defineStore("jokes", () => {
     getGeneratedJokeImage,
 
     searchList
-  } as JokesStore;
+  };
+  return jokes;
 });

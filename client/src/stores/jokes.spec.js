@@ -278,6 +278,25 @@ describe("jokes pinia store", () => {
       });
       expect(dalleImageClient.getGeneratedJokeImage).not.toHaveBeenCalled();
     });
+
+    it('clears localstorage cache and re generates image if refresh arg is passed', async () => {
+      dalleImageClient.getGeneratedJokeImage.mockImplementationOnce(() => [
+        null,
+        { url: "https://test.com/refreshed.png" },
+      ]);
+      const jokes = useJokesStore();
+      localStorage.setItem("joke-image-1", "https://test.com/test.png");
+      jokes.$patch({
+        jokeImagesById: { 1: Option.some("https://test.com/test.png") },
+        jokesById: { 1: Option.some({ id: "1", joke: "test" }) },
+      });
+      await jokes.getGeneratedJokeImage('1', true);
+
+      expect(jokes.jokeImagesById).toStrictEqual({
+        1: Option.some("https://test.com/refreshed.png"),
+      });
+      expect(localStorage.getItem('joke-image-1')).toBe("https://test.com/refreshed.png")
+    });
   });
 
   it("handles the searchList computed", () => {
