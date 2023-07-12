@@ -41,7 +41,7 @@ watch(joke, () => {
 });
 
 onMounted(async () => {
-  if (jokeOption.value === undefined) {
+  if (!jokeOption.value) {
     isLoading.value = true;
     await jokes.getJokeById(props.jokeId);
     isLoading.value = false;
@@ -51,12 +51,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <LaughingSpinner v-if="isLoading || jokeOption === undefined" />
+  <LaughingSpinner v-if="isLoading || !jokeOption" />
   <NotFoundBox v-else-if="isNoJoke" />
   <article v-else-if="joke" class="p-3 text-white bg-black border border-white rounded-md bg-opacity-90">
     <div class="flex items-center justify-center w-full aspect-square">
       <ImageBox @error="handleImageError" :alt="joke.joke" :url="jokeImage" v-if="jokeImage && !isGeneratingJokeImage" />
-      <LaughingSpinner v-else-if="isLoading" />
+      <LaughingSpinner v-else-if="isGeneratingJokeImage" />
       <p v-else>
         🤖 The image robot doesn't understand this joke... yet.🤖
       </p>
