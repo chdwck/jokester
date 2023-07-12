@@ -12,7 +12,6 @@ const jokes = useJokesStore();
 
 const loadMoreTrigger = ref<InstanceType<typeof LaughingSpinner> | null>(null)
 const isLoading = ref(false);
-const hasResults = computed(() => jokes.searchList.length > 0 && !isLoading.value);
 const hasNoResults = computed(() => jokes.searchList.length === 0 && !isLoading.value);
 
 watch(searchQuery, () => {
@@ -58,7 +57,7 @@ async function getSearchResults() {
     </InfoBox>
     <div class="flex flex-col max-w-2xl gap-3 mx-auto">
       <JokeItem v-for="joke in jokes.searchList" :key="joke.id" :joke="joke" />
-      <LaughingSpinner ref="loadMoreTrigger" v-if="!jokes.isPrevSearchAtEnd && hasResults" />
+      <LaughingSpinner ref="loadMoreTrigger" v-if="!jokes.isPrevSearchAtEnd && !hasNoResults" />
     </div>
   </section>
 </template>
