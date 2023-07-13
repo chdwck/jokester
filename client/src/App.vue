@@ -15,7 +15,7 @@ import Searchbar from "@/components/Searchbar.vue";
   <footer class="absolute bottom-0 left-0 right-0 flex items-center justify-center h-8 bg-purple-600 text-purple-50">
     <p>
       Memed with 😂 by
-      <a class="hover:underline" href="https://www.gihub.com/chdwck">@chdwck</a>
+      <a class="hover:underline" href="https://www.github.com/chdwck/jokester">@chdwck</a>
     </p>
   </footer>
 </template>
