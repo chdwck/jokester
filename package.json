@@ -1,16 +1,15 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "jokester",
+  "workspaces": [
+    "packages/server",
+    "packages/client"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "lerna run build",
+    "dev": "export NODE_ENV=development && lerna run --parallel --stream dev",
+    "test": "lerna run test"
   },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "axios": "^1.4.0",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2"
+  "devDependencies": {
+    "lerna": "^7.1.3"
   }
 }
