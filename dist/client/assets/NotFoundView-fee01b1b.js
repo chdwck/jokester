@@ -1,0 +1,1 @@
+import{_ as e}from"./NotFoundBox.vue_vue_type_script_setup_true_lang-3509efac.js";import{d as o,g as t,e as a}from"./index-c3a7f977.js";const m=o({__name:"NotFoundView",setup(n){return(r,_)=>(a(),t(e))}});export{m as default};
