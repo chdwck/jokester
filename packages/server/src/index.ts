@@ -16,10 +16,10 @@ const openaiClient = axios.create({
   }
 })
 
-const promptPrefix = "Turn the following joke into a safe for work and funny image prompt for Dall-E based on the nouns in the joke. Joke: ";
 const TWO_WEEKS_MS = 1000 * 60 * 60 * 24 * 7 * 2;
 
 const cache = new HitpointCache(10, TWO_WEEKS_MS);
+const promptPrefix = "Turn the following joke into a safe for work and funny image prompt for Dall-E based on the nouns in the joke. Please response under 20 words. Do not include text in the images. Do not include text in the images. Don't mention humor in the prompt. Joke: ";
 app.get('/api/v1/dalle-image', async (req: Request, res: Response) => {
   if (!req.query.joke) {
     res.status(400).send('Missing query param: joke');
